@@ -53,19 +53,24 @@ class DashboardController extends Controller
                                                     ->count();
         
         $data['total_sellers']                  = DB::table('role_users')
-                                                    ->whereBetween('created_at', [$start_date, $end_date])
-                                                    ->where('role_id', '=', '4')
+                                                    ->join('roles', 'roles.id', '=', 'role_users.role_id')
+                                                    ->join('users', 'users.users_id', '=', 'role_users.user_id')
+                                                    ->whereBetween('role_users.created_at', [$start_date, $end_date])
+                                                    ->where('roles.slug', '=', 'sellfie-users')
+                                                    ->where('users.block_status', 'n')
+                                                    ->whereNull('deleted_at')
                                                     ->count();
         
         $data['total_products_created']         = DB::table('products')
                                                     ->whereBetween('created_at', [$start_date, $end_date])
-                                                    ->where('is_admin_approved', '=', 'y')
-                                                    ->whereNotNull('deleted_at')
+                                                    ->whereIn('is_admin_approved', ['y', 'na'])
+                                                    ->whereNull('deleted_at')
                                                     ->count();
         
         $data['total_collect_links_created']    = DB::table('payment_links')
                                                     ->whereBetween('created_at', [$start_date, $end_date])
-                                                    ->where('is_admin_approved', '=', 'y')
+                                                    ->whereIn('is_admin_approved', ['y', 'na'])
+                                                    ->whereNull('deleted_at')
                                                     ->count();
         
         $data['total_orders_placed']            = DB::table('order_history')

@@ -1,8 +1,19 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+namespace App\V1\Controllers;
 
+use Illuminate\Support\Facades\Request;
+use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use Sentinel;
+use DB;
+
+use App\DataTables\DisputesDataTable;
+
+class DisputeController extends Controller
+{
+    public function index()
+    {
+        
+    }
+}
