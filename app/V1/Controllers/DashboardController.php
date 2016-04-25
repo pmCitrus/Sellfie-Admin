@@ -46,10 +46,13 @@ class DashboardController extends Controller
     public function loadView($start_date, $end_date, $is_custom)
     {
         $data['total_active_sellers']           = DB::table('user_profiles')
-                                                    ->whereBetween('created_at', [$start_date, $end_date])
+                                                    ->join('users', 'users.users_id', '=', 'user_profiles.users_id')
+                                                    ->whereBetween('user_profiles.created_at', [$start_date, $end_date])
                                                     ->whereNotNull('profile_name')
                                                     ->whereNotNull('profile_description')
                                                     ->whereNotNull('profile_user_name')
+                                                    ->where('users.block_status', 'n')
+                                                    ->whereNull('users.deleted_at')
                                                     ->count();
         
         $data['total_sellers']                  = DB::table('role_users')
