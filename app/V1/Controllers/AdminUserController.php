@@ -9,11 +9,12 @@ use Sentinel;
 
 use App\DataTables\UsersDataTable;
 use App\DepartmentUserMapping;
+use App\DataTables\Scopes\CommonDateSearchScope;
 use Log;
 
 class AdminUserController extends Controller
 {
-    public function index(UsersDatatable $datatable)
+    public function index(UsersDatatable $datatable, Request $request)
     {
         $query_columns  = [
                             'users.users_id',

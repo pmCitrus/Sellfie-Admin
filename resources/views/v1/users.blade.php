@@ -126,7 +126,13 @@
                 "pageLength": "15",
                 "scrollX": true,
                 "scrollY": '250',
-                "ajax": "",
+                "ajax": {
+                        "url": "",
+                        "data": function (d) {
+                            d.start_date    = $('input[name=start_date]').val();
+                            d.end_date      = $('input[name=end_date]').val();
+                        }
+                },
                 "columns": [
                     {
                         "name": "users.users_id",
@@ -200,6 +206,27 @@
                         });
                     });
                 }
+            });
+            
+            $('#search-form').on('submit', function(e) {
+                var start_date  = $('input[name=start_date]').val();
+                var end_date    = $('input[name=end_date]').val();
+                if((start_date == '') || (end_date == ''))
+                {
+                    alert('Kindly select both the dates.');
+                }
+                else
+                {
+                    if(start_date > end_date)
+                    {
+                        alert('Kindly select correct date range.');
+                    }
+                    else
+                    {
+                        window.LaravelDataTables["dataTableBuilder"].draw();
+                    }
+                }
+                e.preventDefault();
             });
         })(window, jQuery);
     </script>
