@@ -59,38 +59,35 @@ class SessionController extends Controller
         
         $user           = Sentinel::findUserByCredentials(['email' => $credentials['email']]);
         $user_arr       = json_decode($user, true);
-        if($user_arr['deleted_at'] == '')
+        
+        $remember       = (bool)$request->get('remember', false);
+        $result         = $this->authManager->authenticate($credentials, $remember);
+        session()->put('errors', '');
+        if(($user_arr['deleted_at'] != '') || ($user_arr['block_status'] != 'n'))
         {
-            $remember       = (bool)$request->get('remember', false);
-            if($user_arr['last_login'] != '')
+            session()->put('errors', 'User account disabled, Contact Us on support@sellfie.me for more details.');
+            $path       = session()->pull('url.intended', route('auth.login.form'));
+        }
+        else if($user_arr['last_login'] != '')
+        {
+            if($result->isSuccessful())
             {
-                $result         = $this->authManager->authenticate($credentials, $remember);
-                if($result->isSuccessful())
-                {
-                   $path        = session()->pull('url.intended', route('dashboard')); 
-                }
-                else
-                {
-                    $path       = session()->pull('url.intended', route('auth.login.form'));
-                }
-                return $result->dispatch($path);
+               $path        = session()->pull('url.intended', route('dashboard')); 
             }
             else
             {
-                $reminder   = Reminder::create($user);
-                $code       = $reminder->code;
-                return redirect('password/reset/'.$code);
+                session()->put('errors', 'Incorrect email / password.');
+                $path           = session()->pull('url.intended', route('auth.login.form'));
             }
         }
         else
         {
-            $data['title']          = 'Login';
-            $data['panel_title']    = 'Login Denied';
-            $data['error_message']  = 'User account disabled, Contact Us on support@sellfie.me for more details';
-            $data['url']            = url('login');
-            $data['url_title']      = 'Login as different user';
-            return view('v1.auth.layout-error', $data);
+            $reminder   = Reminder::create($user);
+            $code       = $reminder->code;
+            return redirect('password/reset/'.$code);
         }
+
+        return $result->dispatch($path);
     }
 
     /**
