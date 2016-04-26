@@ -9,6 +9,8 @@ use Reminder;
 use Sentinel;
 
 use App\User;
+use Log;
+use DB;
 
 class SessionController extends Controller
 {
@@ -49,37 +51,45 @@ class SessionController extends Controller
                                     'password'  => 'required'
                                     ]
                                 );
-        
         // Get Login Credentials
         $credentials    = [
                             'email'     => trim($request->get('email')),
                             'password'  => $request->get('password'),
                             ];
-        $remember       = (bool)$request->get('remember', false);
         
-        //First Time Login Check
-        $is_first_time  = User::whereNull('last_login')
-                                ->where('email', $credentials['email'])
-                                ->first();
-        if(is_null($is_first_time))
+        $user           = Sentinel::findUserByCredentials(['email' => $credentials['email']]);
+        $user_arr       = json_decode($user, true);
+        if($user_arr['deleted_at'] == '')
         {
-            $result         = $this->authManager->authenticate($credentials, $remember);
-            if($result->isSuccessful())
+            $remember       = (bool)$request->get('remember', false);
+            if($user_arr['last_login'] != '')
             {
-               $path        = session()->pull('url.intended', route('dashboard')); 
+                $result         = $this->authManager->authenticate($credentials, $remember);
+                if($result->isSuccessful())
+                {
+                   $path        = session()->pull('url.intended', route('dashboard')); 
+                }
+                else
+                {
+                    $path       = session()->pull('url.intended', route('auth.login.form'));
+                }
+                return $result->dispatch($path);
             }
             else
             {
-                $path       = session()->pull('url.intended', route('auth.login.form'));
+                $reminder   = Reminder::create($user);
+                $code       = $reminder->code;
+                return redirect('password/reset/'.$code);
             }
-            return $result->dispatch($path);
         }
         else
         {
-            $user       = Sentinel::findUserByCredentials(['email' => $credentials['email']]);
-            $reminder   = Reminder::create($user);
-            $code       = $reminder->code;
-            return redirect('password/reset/'.$code);
+            $data['title']          = 'Login';
+            $data['panel_title']    = 'Login Denied';
+            $data['error_message']  = 'User account disabled, Contact Us on support@sellfie.me for more details';
+            $data['url']            = url('login');
+            $data['url_title']      = 'Login as different user';
+            return view('v1.auth.layout-error', $data);
         }
     }
 
