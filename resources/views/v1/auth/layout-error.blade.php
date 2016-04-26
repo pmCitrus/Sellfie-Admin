@@ -10,7 +10,8 @@
                     </div>
                     <div class="panel-body">
                         {{ $error_message }}
-                        <a class="btn btn-link" href="{{ $url }}"> {{ $url_title }}</a>
+                        
+                        <a class="btn btn-link" href="{{ $url }}">{{$url_title}}</a>
                     </div>
                 </div>
             </div>
