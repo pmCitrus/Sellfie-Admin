@@ -172,10 +172,19 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#" id='nav_reports'>
+                                <a href="#" id='main_reports'>
                                     <i class="fa fa-download fa-fw"></i>
                                     Reports
+                                    <span class="fa arrow"></span>
                                 </a>
+                                <ul class="nav nav-second-level">
+                                    <li>
+                                        <a href="{{ route('reports', ['report_type' => 'sellers']) }}" id='reports_sellers'>
+                                            <i class="fa fa-user fa-fw"></i>
+                                            Sellers
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                             <li>
                                 <a href="{{ route('kyc', ['kyc_status' => 'new']) }}" id='nav_kyc'>
