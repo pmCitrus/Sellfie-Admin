@@ -8,13 +8,13 @@
             <div class="row">
                 <h1 class="page-header">
 
-                    Products
+                    Orders
 
                     <div class="col-lg-3 pull-right">
                         <form>
                         <div class="form-group">
                             <select class="form-control" name="internal_status_code" id="internal_status_code">
-                                <option value="all"> All </option>
+                                <option value="all" selected> All </option>
                                 @foreach($code_list as $codes)
                                     <option value='{{ $codes->internal_status_code }}' @if(Request::segment(2) == $codes->internal_status_code) selected @endif> {{ $codes->status_description }} </option>
                                 @endforeach
@@ -83,6 +83,13 @@
                 var url = "{{ url('orders') }}"+"/"+this.value;
                 window.location.replace(url);
             });
+            
+            $(document.body).on('click', '#view_row', function (e){
+                var name        = $(this).parents('tr:first').find('td:first').text();
+                var status_code = $("#internal_status_code").val();
+                var url         = "{{ url('orders') }}/"+status_code+"/"+name+"/show";
+                window.location.replace(url);
+            });
         });
     </script>
     
@@ -112,7 +119,10 @@
                         "data": "orders_id",
                         "title": "Order ID",
                         "orderable": false,
-                        "searchable": true
+                        "searchable": true,
+                        "render": function(data) {
+                            return  '<a title="View Order History" id="view_row">'+data+'</a>';
+                        }
                     },
                     {
                         "name": "product_name",
@@ -202,8 +212,8 @@
                 initComplete: function () {
                     this.api().columns().every(function () {
                         $('.dataTables_scrollBody thead tr').addClass('hidden');
-                        var column = this;
-                        var input = document.createElement("input");
+                        var column  = this;
+                        var input   = document.createElement("input");
                         $(input).appendTo($(column.footer()).empty()).on('keyup', function () {
                             column.search($(this).val(), false, false, true).draw();
                         });

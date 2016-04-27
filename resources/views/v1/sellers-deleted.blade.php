@@ -14,7 +14,7 @@
                             <select class="form-control" name="seller_status" id="seller_status">
                                 <option value="sign_up" > Sign Up </option>
                                 <option value="active" > Active </option>
-                                <option value="deleted" selected> Deleted </option>
+                                <option value="deleted" selected> Disabled </option>
                                 <option value="banned"> Banned </option>
                             </select>
                         </div>
@@ -228,19 +228,16 @@
                         "searchable": false,
                         "render": function ( ) {
                                     return  ' <a id="edit_row"'
-                                            + 'title="View or Edit Seller"'
                                             + 'class="btn btn-xs btn-primary">'
-                                            + '<i class="glyphicon glyphicon-edit"></i>'
+                                            + 'Edit'
                                             + '</a>&nbsp;'
                                             + ' <a id="enable_row"'
-                                            + 'title="Enable Seller"'
                                             + 'class="btn btn-xs btn-success">'
-                                            + '<i class="glyphicon glyphicon-check"></i>'
+                                            + 'Enable'
                                             + '</a>&nbsp;'
-                                            +'<a id="ban_row"'
-                                            + 'title="Ban Seller"'
+                                            + '<a id="ban_row"'
                                             + ' class="btn btn-xs btn-danger">'
-                                            + '<i class="glyphicon glyphicon-ban-circle"></i>'
+                                            + 'Ban'
                                             + '</a>';
                                   }
                     }

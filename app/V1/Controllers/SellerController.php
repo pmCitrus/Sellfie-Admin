@@ -13,7 +13,6 @@ use App\DataTables\Scopes\SellerBannedDataTableScope;
 use App\DataTables\Scopes\SellerCommonScope;
 use App\DataTables\Scopes\CommonDateSearchScope;
 
-//use Yajra\Datatables\Facades\Datatables;
 use DB;
 use Sentinel;
 use Log;
@@ -51,6 +50,7 @@ class SellerController extends Controller
                                     'created_at'
                                     ];
                 break;
+            
             case 'active':
                 $scope          = new SellerActiveDataTableScope();
                 $view           = 'v1.sellers-active';
@@ -80,6 +80,7 @@ class SellerController extends Controller
                                     ];
                 $datatable->addScope($common_scope);
                 break;
+            
             case 'deleted':
                 $scope          = new SellerDeletedDataTableScope();
                 $view           = 'v1.sellers-deleted';
@@ -109,6 +110,7 @@ class SellerController extends Controller
                                     ];
                 $datatable->addScope($common_scope);
                 break;
+            
             case 'banned':
                 $scope          = new SellerBannedDataTableScope();
                 $view           = 'v1.sellers-banned';
@@ -140,6 +142,7 @@ class SellerController extends Controller
                                     ];
                 $datatable->addScope($common_scope);
                 break;
+            
             default:
                 $scope          = new SellerSignedUpDataTableScope();
                 $view           = 'v1.sellers-signup';
@@ -164,6 +167,7 @@ class SellerController extends Controller
                                     'created_at'
                                     ];
         }
+        
         $datatable->setQueryColumns($query_columns);
         $datatable->setExportColumns($export_columns);
         $datatable->addScope($scope);

@@ -14,7 +14,7 @@
                             <select class="form-control" name="seller_status" id="seller_status">
                                 <option value="sign_up" > Sign Up </option>
                                 <option value="active" > Active </option>
-                                <option value="deleted" > Deleted </option>
+                                <option value="deleted" > Disabled </option>
                                 <option value="banned" selected> Banned </option>
                             </select>
                         </div>

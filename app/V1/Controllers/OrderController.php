@@ -69,6 +69,45 @@ class OrderController extends Controller
         return $datatable->render('v1.orders', $data);
     }
     
+    public function show()
+    {
+        $orders_id      = Request::segment(3);
+        
+        $query_columns  = [
+                            'products.products_id',
+                            'products.product_name',
+                            'products.product_description',
+                            'products.created_at',
+                            'users.first_name',
+                            'users.username',
+                            'internal_status_codes.status_description',
+                            'orders.created_at',
+                            'payment_details.customers_name',
+                            'payment_details.customers_contact_number',
+                            'order_items.order_items_quantity',
+                            'order_items.order_items_price',
+                            'providers.providers_name',
+                            'payment_details.payment_ref_id',
+                            'payment_details.payment_mode',
+                            'payment_details.customers_email_address',
+                            'pg_status_codes.pg_status_description'
+                            ];
+        
+        $order_data     = DB::table('orders')
+                            ->join('internal_status_codes', 'internal_status_codes.internal_status_code', '=', 'orders.internal_status_code')
+                            ->join('users', 'users.users_id', '=', 'orders.seller_user_id')
+                            ->join('order_items', 'order_items.orders_id', '=', 'orders.orders_id')
+//                            ->join('order_history', 'order_history.orders_id', '=', 'orders.orders_id')
+                            ->join('products', 'products.products_id', '=', 'order_items.products_id')
+                            ->join('payment_details', 'payment_details.payment_ref_id', '=', 'orders.payment_ref_id')
+                            ->leftJoin('pg_status_codes', 'pg_status_codes.pg_status_code', '=', 'payment_details.pg_status_code')
+                            ->join('providers', 'providers.providers_id', '=', 'payment_details.shares_providers_id')
+                            ->where('orders.orders_id', $orders_id)
+                            ->get($query_columns);
+        $data           = json_decode(json_encode($order_data[0]), true);
+        return view('v1.orders-show', $data);
+    }
+    
     public function refund()
     {
         

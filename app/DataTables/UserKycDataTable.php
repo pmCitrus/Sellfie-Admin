@@ -4,6 +4,8 @@ namespace App\DataTables;
 
 use Yajra\Datatables\Services\DataTable;
 use Illuminate\Database\Eloquent\Builder;
+use Carbon\Carbon;
+
 //Eloquent
 use App\UserKyc;
 
@@ -43,10 +45,13 @@ class UserKycDataTable extends DataTable
      */
     public function query()
     {
-        $users  = UserKyc::join('users', 'users.users_id', '=', 'user_kycs.users_id')
-                    ->join('user_profiles', 'user_profiles.users_id', '=', 'users.users_id')
-                    ->select($this->query_columns)
-                    ->orderBy('user_kycs.updated_at', 'desc');
+        $max_date   = Carbon::today()->modify('-3 months')->toDateTimeString();
+        $users      = UserKyc::join('users', 'users.users_id', '=', 'user_kycs.users_id')
+                        ->join('user_profiles', 'user_profiles.users_id', '=', 'users.users_id')
+                        ->select($this->query_columns)
+                        ->where('user_kycs.created_at', '>=', $max_date)
+                        ->orderBy('user_kycs.updated_at', 'desc')
+                        ->orderBy('users.users_id', 'desc');
         return $this->applyScopes($users);
     }
 

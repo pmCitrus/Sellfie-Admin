@@ -49,7 +49,8 @@ class OrdersDataTable extends DataTable
                     ->join('payment_details', 'payment_details.payment_ref_id', '=', 'orders.payment_ref_id')
                     ->join('internal_status_codes', 'internal_status_codes.internal_status_code', '=', 'orders.internal_status_code')
                     ->select($this->query_columns)
-                    ->orderBy('orders.updated_at', 'desc');
+                    ->orderBy('orders.updated_at', 'desc')
+                    ->orderBy('orders.orders_id', 'desc');
         return $this->applyScopes($orders);
     }
 

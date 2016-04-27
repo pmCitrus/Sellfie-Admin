@@ -21,14 +21,16 @@ class AdminUserController extends Controller
                             'username',
                             'email',
                             'departments_name',
-                            'users.created_at'
+                            'users.created_at',
+                            'users.deleted_at'
                             ];
         $export_columns = [
                             'users_id',
                             'username',
                             'email',
                             'departments_name',
-                            'created_at'
+                            'created_at',
+                            'deleted_at'
                             ];
         $datatable->setQueryColumns($query_columns);
         $datatable->setExportColumns($export_columns);
@@ -67,12 +69,13 @@ class AdminUserController extends Controller
     
     public function store()
     {
-        $request                    = Request::all();
-        $create_data['login']       = $request['email'];
-        $create_data['username']    = $request['username'];
-        $create_data['password']    = config('cartalyst.sentinel.default_user_password');
-        $create_data['first_name']  = $request['first_name'];
-        $create_data['last_name']   = $request['last_name'];
+        $request                            = Request::all();
+        $create_data['login']               = $request['email'];
+        $create_data['username']            = $request['username'];
+        $create_data['password']            = config('cartalyst.sentinel.default_user_password');
+        $create_data['first_name']          = $request['first_name'];
+        $create_data['last_name']           = $request['last_name'];
+        $create_data['registration_mode']   = 'web';
         $admin_user = Sentinel::register($create_data, true);
         
         if($request['permission_type'] == '16') //user is given custom permission (Subscriber role)
@@ -234,6 +237,18 @@ class AdminUserController extends Controller
         
         $url    = route('users_view', ['id' => $request['users_id']]);
         return redirect($url);
+    }
+    
+    public function enable($id)
+    {
+        $update_array['deleted_at'] = NULL;
+        $update_array['updated_at'] = date('Y-m-d H:i:s');
+        
+        $updated    = DB::table('users')
+                        ->where('users_id', $id)
+                        ->update($update_array);
+        
+        return redirect('users');
     }
     
     public function delete($id)

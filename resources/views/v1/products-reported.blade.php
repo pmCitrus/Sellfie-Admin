@@ -240,19 +240,16 @@
                         "searchable": false,
                         "render": function ( ) {
                                     return  ' <a id="ignore_row"'
-                                            + 'title="Ignore Product"'
                                             + 'class="btn btn-xs btn-primary">'
                                             + 'Ignore'
                                             + '</a>&nbsp;'
                                             + '<a id="disable_row"'
-                                            + 'title="Disable Product"'
                                             + 'class="btn btn-xs btn-warning">'
-                                            + '<i class="glyphicon glyphicon-remove-sign"></i>'
+                                            + 'Disable'
                                             + '</a>&nbsp;'
-                                            +'<a id="ban_row"'
-                                            + 'title="Ban Product"'
-                                            + ' class="btn btn-xs btn-danger">'
-                                            + '<i class="glyphicon glyphicon-ban-circle"></i>'
+                                            + '<a id="ban_row"'
+                                            + 'class="btn btn-xs btn-danger">'
+                                            + 'Ban'
                                             + '</a>';
                                   }
                     }

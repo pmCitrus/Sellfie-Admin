@@ -223,21 +223,18 @@
                                     else
                                     {
                                         action_type = ' <a id="approve_row"'
-                                            + 'title="Approve Link"'
                                             + 'class="btn btn-xs btn-success">'
                                             + 'Approve'
                                             + '</a>&nbsp;';
                                     }
                                     return  action_type
                                             + '<a id="disable_row"'
-                                            + 'title="Disable Link"'
                                             + 'class="btn btn-xs btn-warning">'
-                                            + '<i class="glyphicon glyphicon-remove-sign"></i>'
+                                            + 'Disable'
                                             + '</a>&nbsp;'
-                                            +'<a id="ban_row"'
-                                            + 'title="Ban Link"'
-                                            + ' class="btn btn-xs btn-danger">'
-                                            + '<i class="glyphicon glyphicon-ban-circle"></i>'
+                                            + '<a id="ban_row"'
+                                            + 'class="btn btn-xs btn-danger">'
+                                            + 'Ban'
                                             + '</a>';
                                 }
                     }

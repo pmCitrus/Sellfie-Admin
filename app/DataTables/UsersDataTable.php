@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use Yajra\Datatables\Services\DataTable;
+use Carbon\Carbon;
 use DB;
 use Log;
 
@@ -44,15 +45,18 @@ class UsersDataTable extends DataTable
      */
     public function query()
     {
-        $users  = User::join('department_user_mappings', 'department_user_mappings.users_id', '=', 'users.users_id')
+        $max_date   = Carbon::today()->modify('-3 months')->toDateTimeString();
+        $users      = User::join('department_user_mappings', 'department_user_mappings.users_id', '=', 'users.users_id')
                     ->join('departments', 'departments.departments_id', '=', 'department_user_mappings.departments_id')
                     ->join('role_users', 'role_users.user_id', '=', 'users.users_id')
                     ->join('roles', 'roles.id', '=', 'role_users.role_id')
                     ->select($this->query_columns)
-                    ->where('roles.slug', '<>', 'sellfie-users')
-//                    ->where('block_status', 'n')
-//                    ->withTrashed()
-                    ->orderBy('users.created_at', 'desc');
+                    ->whereNotIn('roles.slug', ['Administrator', 'sellfie-users'])
+                    ->where('block_status', 'n')
+                    ->withTrashed()
+                    ->where('users.created_at', '>=', $max_date)
+                    ->orderBy('users.updated_at', 'desc')
+                    ->orderBy('users.users_id', 'desc');
         return $this->applyScopes($users);
     }
 

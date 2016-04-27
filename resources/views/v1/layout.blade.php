@@ -130,13 +130,13 @@
                                     <li>
                                         <a href="{{ route('orders', ['status_code' => 'all']) }}" id='payments_orders'>
                                             <i class="fa fa-barcode fa-fw"></i>
-                                            Products
+                                            Orders
                                         </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('collect_payments', ['status_code' => 'all']) }}" id='payments_collects'>
                                             <i class="fa fa-credit-card fa-fw"></i>
-                                            Collect Links
+                                            Collect Link Payments
                                         </a>
                                     </li>
                                     <li>

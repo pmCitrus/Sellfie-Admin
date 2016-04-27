@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use Yajra\Datatables\Services\DataTable;
 use Illuminate\Database\Eloquent\Builder;
+use Carbon\Carbon;
 //Eloquent
 use App\PaymentLink;
 
@@ -43,10 +44,13 @@ class CollectLinksDataTable extends DataTable
      */
     public function query()
     {
-        $users  = PaymentLink::join('users', 'users.users_id', '=', 'payment_links.users_id')
-                    ->join('user_profiles', 'user_profiles.users_id', '=', 'users.users_id')
-                    ->select($this->query_columns)
-                    ->orderBy('payment_links.created_at', 'desc');
+        $max_date   = Carbon::today()->modify('-3 months')->toDateTimeString();
+        $users      = PaymentLink::join('users', 'users.users_id', '=', 'payment_links.users_id')
+                        ->join('user_profiles', 'user_profiles.users_id', '=', 'users.users_id')
+                        ->select($this->query_columns)
+                        ->where('payment_links.created_at', '>=', $max_date)
+                        ->orderBy('payment_links.updated_at', 'desc')
+                        ->orderBy('payment_links.payment_links_id', 'desc');
         return $this->applyScopes($users);
     }
 

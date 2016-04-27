@@ -13,7 +13,7 @@
                 <form accept-charset="UTF-8" role="form" method="post" action="{{ route('auth.password.reset.attempt', $code) }}">
                 <fieldset>
                     <div class="form-group  {{ ($errors->has('password')) ? 'has-error' : '' }}">
-                        <input class="form-control" placeholder="Password" name="password" type="password" value="" pattern="^(?=\D*\d)(?=.*?[a-zA-Z])(?=[\w!$(),.:;?@{}\[\]^-]{8,}$)((.)\2?(?!\2))+$">
+                        <input class="form-control" placeholder="Password" name="password" type="password" value="">
                         {!! ($errors->has('password') ? $errors->first('password', '<p class="text-danger">:message</p>') : '') !!}
                     </div>
                     <div class="form-group  {{ ($errors->has('password_confirmation')) ? 'has-error' : '' }}">

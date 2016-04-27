@@ -14,7 +14,7 @@
                             <select class="form-control" name="seller_status" id="seller_status">
                                 <option value="sign_up" selected > Sign Up </option>
                                 <option value="active" > Active </option>
-                                <option value="deleted"> Deleted </option>
+                                <option value="deleted"> Disabled </option>
                                 <option value="banned" > Banned </option>
                             </select>
                         </div>
@@ -99,12 +99,12 @@
             });
             
             $(document.body).on('click', '#delete_row, #ban_row', function (e){
-                var action_type = ($(this).attr('id') == 'delete_row') ? "delete" : "ban";
+                var action_type = ($(this).attr('id') == 'delete_row') ? "disable" : "ban";
                 var name        = $(this).parents('tr:first').find('td:first').text();
                 
                 if(confirm('Do you want to '+action_type+' seller?'))
                 {
-                    if(action_type == 'delete')
+                    if(action_type == 'disable')
                     {
                         var url     = "{{ route('sellers', ['seller_status' => Request::segment(2)]) }}/"+name+"/"+action_type;
                         window.location.replace(url);
@@ -217,14 +217,14 @@
                         "searchable": false,
                         "render": function ( data, type, full ) {
                                     return  ' <a id="delete_row"'
-                                            + 'title="Delete Seller"'
+                                            + 'title="Disable Seller"'
                                             + 'class="btn btn-xs btn-warning">'
-                                            + '<i class="glyphicon glyphicon-remove-sign"></i>'
+                                            + 'Disable'
                                             + '</a>&nbsp;'
                                             +'<a id="ban_row"'
                                             + 'title="Ban Seller"'
                                             + ' class="btn btn-xs btn-danger">'
-                                            + '<i class="glyphicon glyphicon-ban-circle"></i>'
+                                            + 'Ban'
                                             + '</a>';
                                   }
                     }

@@ -14,7 +14,7 @@
                             <select class="form-control" name="seller_status" id="seller_status">
                                 <option value="sign_up" > Sign Up </option>
                                 <option value="active" selected > Active </option>
-                                <option value="deleted" > Deleted </option>
+                                <option value="deleted" > Disabled </option>
                                 <option value="banned"> Banned </option>
                             </select>
                         </div>
@@ -73,7 +73,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                         <form class="form-inline" id="ban_reason-form" action="{{route('sellers_ban', ['seller_status' => Request::segment(2))]) }}" method="POST">
+                         <form class="form-inline" id="ban_reason-form" action="{{route('sellers_ban', ['seller_status' => Request::segment(2)]) }}" method="POST">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="users_id" id="ban_users_id" value="">
                             Enter ban reason
@@ -99,12 +99,12 @@
             });
             
             $(document.body).on('click', '#delete_row, #ban_row', function (e){
-                var action_type = ($(this).attr('id') == 'delete_row') ? "delete" : "ban";
+                var action_type = ($(this).attr('id') == 'delete_row') ? "disable" : "ban";
                 var name        = $(this).parents('tr:first').find('td:first').text();
                 
                 if(confirm('Do you want to '+action_type+' seller?'))
                 {
-                    if(action_type == 'delete')
+                    if(action_type == 'disable')
                     {
                         var url     = "{{ route('sellers', ['seller_status' => Request::segment(2)]) }}/"+name+"/"+action_type;
                         window.location.replace(url);
@@ -209,22 +209,19 @@
                         "orderable": false,
                         "searchable": false,
                         "render": function ( ) {
-                                    return  ' <a id="edit_row"'
-                                            + 'title="View or Edit Seller"'
-                                            + 'class="btn btn-xs btn-primary">'
-                                            + '<i class="glyphicon glyphicon-edit"></i>'
-                                            + '</a>&nbsp;'
-                                            + ' <a id="delete_row"'
-                                            + 'title="Delete Seller"'
-                                            + 'class="btn btn-xs btn-warning">'
-                                            + '<i class="glyphicon glyphicon-remove-sign"></i>'
-                                            + '</a>&nbsp;'
-                                            +'<a id="ban_row"'
-                                            + 'title="Ban Seller"'
-                                            + ' class="btn btn-xs btn-danger">'
-                                            + '<i class="glyphicon glyphicon-ban-circle"></i>'
-                                            + '</a>';
-                                  }
+                            return  ' <a id="edit_row"'
+                                    + 'class="btn btn-xs btn-primary">'
+                                    + 'Edit'
+                                    + '</a>&nbsp;'
+                                    + ' <a id="delete_row"'
+                                    + 'class="btn btn-xs btn-warning">'
+                                    + 'Disable'
+                                    + '</a>&nbsp;'
+                                    + '<a id="ban_row"'
+                                    + 'class="btn btn-xs btn-danger">'
+                                    + 'Ban'
+                                    + '</a>';
+                        }
                     }
                 ],
                 "dom": "Bfrtip",

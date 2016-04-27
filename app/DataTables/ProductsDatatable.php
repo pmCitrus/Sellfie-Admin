@@ -4,6 +4,8 @@ namespace App\DataTables;
 
 use Yajra\Datatables\Services\DataTable;
 use Illuminate\Database\Eloquent\Builder;
+use Carbon\Carbon;
+
 //Eloquent
 use App\Product;
 use Log;
@@ -43,11 +45,14 @@ class ProductsDataTable extends DataTable
      */
     public function query()
     {
-        $users  = Product::join('skus', 'skus.products_id', '=', 'products.products_id')
-                    ->join('users', 'users.users_id', '=', 'products.users_id')
-                    ->join('user_profiles', 'user_profiles.users_id', '=', 'users.users_id')
-                    ->select($this->query_columns)
-                    ->orderBy('products.created_at', 'desc');
+        $max_date   = Carbon::today()->modify('-3 months')->toDateTimeString();
+        $users      = Product::join('skus', 'skus.products_id', '=', 'products.products_id')
+                        ->join('users', 'users.users_id', '=', 'products.users_id')
+                        ->join('user_profiles', 'user_profiles.users_id', '=', 'users.users_id')
+                        ->select($this->query_columns)
+                        ->where('products.created_at', '>=', $max_date)
+                        ->orderBy('products.updated_at', 'desc')
+                        ->orderBy('products.products_id', 'desc');
         return $this->applyScopes($users);
     }
 

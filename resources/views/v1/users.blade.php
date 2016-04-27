@@ -49,7 +49,7 @@
                             <th rowspan="1" colspan="1"> <input> </th>
                             <th rowspan="1" colspan="1"> <input> </th>
                             <th rowspan="1" colspan="1"> <input> </th>
-                            <th rowspan="1" colspan="1"> <input disabled> </th>
+                            <th rowspan="1" colspan="1"> <input> </th>
                         </tr>
                     </tfoot>
                 </table>
@@ -87,22 +87,41 @@
                 window.location.replace(url);
             });
             
-            $(document.body).on('click', '#delete_row, #ban_row', function (e){
+            $(document.body).on('click', '#enable_row, #delete_row, #ban_row', function (e){
                 var action_type = ($(this).attr('id') === 'delete_row') ? "delete" : "ban";
                 var name        = $(this).parents('tr:first').find('td:first').text();
+                var action_type;
+                
+                switch($(this).attr('id'))
+                {
+                    case 'enable_row':
+                        action_type = 'enable';
+                        break;
+                        
+                    case 'delete_row':
+                        action_type = 'disable';
+                        break;
+                        
+                    case 'ban_row':
+                        action_type = 'ban';
+                        break;
+                        
+                    default:
+                        e.preventDefault();
+                }
                 
                 if(confirm('Do you want to '+action_type+' moderator?'))
                 {
-                    if(action_type === 'delete')
-                    {
-                        var url = "{{ route('users') }}/"+name+"/"+action_type;
-                        window.location.replace(url);
-                    }
-                    else
+                    if(action_type === 'ban')
                     {
                         $('#ban_users_id').val(name);
                         $('#myModal').modal('show');
                         e.preventDefault();
+                    }
+                    else
+                    {
+                        var url = "{{ route('users') }}/"+name+"/"+action_type;
+                        window.location.replace(url);
                     }
                 }
                 else
@@ -176,21 +195,35 @@
                         "orderable": false,
                         "searchable": false,
                         "render": function ( data, type, full ) {
-                                    return  ' <a id="edit_row"'
-                                            + 'title="Edit Details"'
-                                            + 'class="btn btn-xs btn-primary">'
-                                            + '<i class="glyphicon glyphicon-edit"></i>'
-                                            + '</a>&nbsp;'
-                                            + '<a id="delete_row"'
-                                            + 'title="Delete Moderator"'
+                                var enable_or_disable_action;
+                                if(full.deleted_at == null)
+                                {
+                                    enable_or_disable_action = '<a id="delete_row"'
+                                            + 'title="Disable Moderator"'
                                             + 'class="btn btn-xs btn-warning">'
-                                            + '<i class="glyphicon glyphicon-remove-sign"></i>'
-                                            + '</a>&nbsp;'
-                                            +'<a id="ban_row"'
-                                            + 'title="Ban Moderator"'
-                                            + ' class="btn btn-xs btn-danger">'
-                                            + '<i class="glyphicon glyphicon-ban-circle"></i>'
-                                            + '</a>';
+                                            + 'Disable'
+                                            + '</a>&nbsp;';
+                                }
+                                else if(full.deleted_at != '')
+                                {
+                                    enable_or_disable_action = '<a id="enable_row"'
+                                            + 'title="Enable Moderator"'
+                                            + 'class="btn btn-xs btn-success">'
+                                            + 'Enable'
+                                            + '</a>&nbsp;';
+                                }
+                                
+                                return  ' <a id="edit_row"'
+                                        + 'title="Edit Details"'
+                                        + 'class="btn btn-xs btn-primary">'
+                                        + 'Edit'
+                                        + '</a>&nbsp;'
+                                        + enable_or_disable_action
+                                        +'<a id="ban_row"'
+                                        + 'title="Ban Moderator"'
+                                        + 'class="btn btn-xs btn-danger">'
+                                        + 'Ban'
+                                        + '</a>';
                                   }
                     }
                 ],

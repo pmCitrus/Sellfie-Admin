@@ -63,7 +63,8 @@ Route::group(['middleware' => ['web']], function () {
             Route::post('users/new', ['as' => 'users_new', 'uses' => 'AdminUserController@store']);
             Route::get('users/{id}/view', ['as' => 'users_view', 'uses' => 'AdminUserController@updateView']);
             Route::post('users/update', ['as' => 'users_update', 'uses' => 'AdminUserController@update']);
-            Route::get('users/{id}/delete', ['as' => 'users_delete', 'uses' => 'AdminUserController@delete']);
+            Route::get('users/{id}/enable', ['as' => 'users_enable', 'uses' => 'AdminUserController@enable']);
+            Route::get('users/{id}/disable', ['as' => 'users_delete', 'uses' => 'AdminUserController@delete']);
             Route::post('users/ban', ['as' => 'users_ban', 'uses' => 'AdminUserController@ban']);
             
             //Sellers
@@ -71,7 +72,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('sellers/{seller_status}/{id}/view', ['as' => 'sellers_view', 'uses' => 'SellerController@updateView']);
             Route::post('sellers/{seller_status}', ['as' => 'sellers_view', 'uses' => 'SellerController@update']);
             Route::get('sellers/{seller_status}/{id}/enable', ['as' => 'sellers_enable', 'uses' => 'SellerController@enable']);
-            Route::get('sellers/{seller_status}/{id}/delete', ['as' => 'sellers_delete', 'uses' => 'SellerController@delete']);
+            Route::get('sellers/{seller_status}/{id}/disable', ['as' => 'sellers_delete', 'uses' => 'SellerController@delete']);
             Route::post('sellers/{seller_status}/ban', ['as' => 'sellers_ban', 'uses' => 'SellerController@ban']);
             
             Route::get('products/{product_status}', ['as' => 'products', 'uses' => 'ProductController@index']);
@@ -89,6 +90,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('collect_links/{collect_link_status}/{id}/ignore', ['as' => 'collect_links_ignore', 'uses' => 'CollectLinkController@ignore']);
             
             Route::get('orders/{status_code}', ['as' => 'orders', 'uses' => 'OrderController@index']);
+            Route::get('orders/{status_code}/{id}/show', ['as' => 'orders_show', 'uses' => 'OrderController@show']);
             Route::get('orders/{status_code}/{id}/{action_type}', ['as' => 'orders_refund', 'uses' => 'OrderController@refund']);
             
             Route::get('collect_payments/{status_code}', ['as' => 'collect_payments', 'uses' => 'CollectPaymentController@index']);
