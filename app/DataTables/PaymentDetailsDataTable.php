@@ -11,6 +11,19 @@ use App\PaymentDetail;
 
 class PaymentDetailsDataTable extends DataTable
 {
+    protected $query_columns;
+    protected $export_columns;
+    
+    public function setQueryColumns($query_columns)
+    {
+        $this->query_columns    = $query_columns;
+    }
+    
+    public function setExportColumns($export_columns)
+    {
+        $this->export_columns   = $export_columns;
+    }
+    
     /**
      * Display ajax response.
      *
@@ -20,9 +33,8 @@ class PaymentDetailsDataTable extends DataTable
     {
         $data   = $this->datatables
                     ->eloquent($this->query())
-                    ->addColumn('action', 'View')
                     ->make(true);
-        Log::info($data);
+        
         return $data;
     }
 
@@ -33,19 +45,11 @@ class PaymentDetailsDataTable extends DataTable
      */
     public function query()
     {
-        $orders = PaymentDetail::join('users', 'users.users_id', '=', 'payment_details.seller_user_id')
-                    ->join('providers', 'providers.providers_id', '=', 'payment_details.shares_providers_id')
-                    ->select([
-                        'payment_details.payment_details_id',
-                        'payment_details.created_at',
-                        'payment_source',
-                        'payment_source_id',
-                        'providers_name',
-                        'payment_details.total_amount',
-                        'users.first_name',
-                        'users.username'
-                        ]);
-        return $this->applyScopes($orders);
+        $transactions   = PaymentDetail::join('users', 'users.users_id', '=', 'payment_details.seller_user_id')
+                            ->join('pg_status_codes', 'pg_status_codes.pg_status_code', '=', 'payment_details.pg_status_code')
+                            ->join('providers', 'providers.providers_id', '=', 'payment_details.shares_providers_id')
+                            ->select($this->query_columns);
+        return $this->applyScopes($transactions);
     }
 
     /**
@@ -57,7 +61,7 @@ class PaymentDetailsDataTable extends DataTable
     {
         return $this->builder()
                     ->columns($this->getColumns())
-                    ->ajax('')
+                    ->ajax('url["transactions"]')
                     ->addAction(['width' => '80px'])
                     ->parameters($this->getBuilderParameters());
     }
@@ -69,8 +73,7 @@ class PaymentDetailsDataTable extends DataTable
      */
     private function getColumns()
     {
-        return [
-        ];
+        return $this->export_columns;
     }
 
     /**

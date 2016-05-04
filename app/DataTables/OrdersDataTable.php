@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use Yajra\Datatables\Services\DataTable;
+use Carbon\Carbon;
 
 //Eloquent
 use App\Order;
@@ -43,14 +44,16 @@ class OrdersDataTable extends DataTable
      */
     public function query()
     {
-        $orders = Order::join('users', 'users.users_id', '=', 'orders.seller_user_id')
-                    ->join('order_items', 'order_items.orders_id', '=', 'orders.orders_id')
-                    ->join('products', 'products.products_id', '=', 'order_items.products_id')
-                    ->join('payment_details', 'payment_details.payment_ref_id', '=', 'orders.payment_ref_id')
-                    ->join('internal_status_codes', 'internal_status_codes.internal_status_code', '=', 'orders.internal_status_code')
-                    ->select($this->query_columns)
-                    ->orderBy('orders.updated_at', 'desc')
-                    ->orderBy('orders.orders_id', 'desc');
+        $max_date   = Carbon::today()->modify('-3 months')->toDateTimeString();
+        $orders     = Order::join('users', 'users.users_id', '=', 'orders.seller_user_id')
+                        ->join('order_items', 'order_items.orders_id', '=', 'orders.orders_id')
+                        ->join('products', 'products.products_id', '=', 'order_items.products_id')
+                        ->join('payment_details', 'payment_details.payment_ref_id', '=', 'orders.payment_ref_id')
+                        ->join('internal_status_codes', 'internal_status_codes.internal_status_code', '=', 'orders.internal_status_code')
+                        ->select($this->query_columns)
+                        ->where('orders.created_at', '>=', $max_date)
+                        ->orderBy('orders.updated_at', 'desc')
+                        ->orderBy('orders.orders_id', 'desc');
         return $this->applyScopes($orders);
     }
 

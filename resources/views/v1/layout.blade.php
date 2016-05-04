@@ -140,7 +140,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('transactions') }}" id='payments_transactions'>
+                                        <a href="{{ route('transactions', ['status_code' => 'all']) }}" id='payments_transactions'>
                                             <i class="fa fa-signal fa-fw"></i>
                                             Transactions
                                         </a>

@@ -29,6 +29,7 @@ class OrderController extends Controller
         
         $query_columns  = [
                         'orders.orders_id',
+                        'orders.created_at',
                         'product_name',
                         'users.first_name',
                         'users.username',
@@ -41,6 +42,7 @@ class OrderController extends Controller
         
         $export_columns = [
                         'orders_id',
+                        'created_at',
                         'product_name',
                         'first_name',
                         'username',

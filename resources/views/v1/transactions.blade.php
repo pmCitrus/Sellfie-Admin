@@ -10,13 +10,26 @@
                     
                     Transactions
                     
+                    <div class="col-lg-3 pull-right">
+                        <form>
+                        <div class="form-group">
+                            <select class="form-control" name="pg_status_code" id="pg_status_code">
+                                <option value="all" selected> All </option>
+                                @foreach($code_list as $codes)
+                                    <option value='{{ $codes->pg_status_code }}' @if(Request::segment(2) == $codes->pg_status_code) selected @endif> {{ $codes->pg_status_description }} </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        </form>
+                    </div>
+                    
                 </h1>
             </div>
         </div>
         <!-- /.col-lg-12 -->
         <div class="container-outer-udf">
             <div class="container-inner-udf">
-                <form class="form-inline" id="search-form" method="POST" role="form" >
+                <form class="form-inline" style ="width: 500px;margin: 0 auto;"  id="search-form" method="POST" role="form" >
                     From
                     <input type="date" class="form-control" name="start_date" rel="2">
                     to
@@ -24,6 +37,9 @@
 
                     <input type="submit" class="form-control btn btn-primary" value="Search" />
                 </form>
+                
+                <br>
+                
                 <table class="table table-bordered dataTable" id="transactions-table">
                     <thead>
                         <tr>
@@ -62,6 +78,18 @@
         $(document).ready(function()
 	{
             $('#payments_transactions').addClass('active');
+            
+            $("#pg_status_code").change(function(){
+                var url = "{{ url('transactions') }}"+"/"+this.value;
+                window.location.replace(url);
+            });
+            
+            $(document.body).on('click', '#view_row', function (e){
+                var name        = $(this).parents('tr:eq(0)').find('td:eq(1)').text();
+                var status_code = $("#pg_status_code").val();
+                var url         = "{{ url('transactions') }}/"+status_code+"/"+name+"/show";
+                window.location.replace(url);
+            });
         });
     </script>
     
@@ -94,9 +122,19 @@
                         "searchable": true
                     },
                     {
-                        "name": "payment_details.payment_details_id",
-                        "data": "payment_details_id",
-                        "title": "Transaction ID",
+                        "name": "payment_details.payment_ref_id",
+                        "data": "payment_ref_id",
+                        "title": "Transaction Ref ID",
+                        "orderable": true,
+                        "searchable": true,
+                        "render": function(data) {
+                            return  '<a title="View Transaction history" id="view_row">'+data+'</a>';
+                        }
+                    },
+                    {
+                        "name": "pg_status_description",
+                        "data": "pg_status_description",
+                        "title": "Transaction Status",
                         "orderable": true,
                         "searchable": true
                     },
@@ -141,14 +179,7 @@
                         "title": "Seller Mobile",
                         "orderable": true,
                         "searchable": true
-                    },
-                    {
-                        "data": 'action',
-                        "title": "Action",
-                        "name": 'action',
-                        "orderable": false,
-                        "searchable": false
-                    },
+                    }
                 ],
                 "dom": "Bfrtip",
                 "buttons": ["csv", "excel"],          

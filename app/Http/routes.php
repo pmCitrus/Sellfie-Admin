@@ -95,8 +95,8 @@ Route::group(['middleware' => ['web']], function () {
             
             Route::get('collect_payments/{status_code}', ['as' => 'collect_payments', 'uses' => 'CollectPaymentController@index']);
             
-            Route::get('transactions', ['as' => 'transactions', 'uses' => 'TransactionController@index']);
-            Route::get('transactions/{id}/view', ['as' => 'transactions_view', 'uses' => 'TransactionController@show']);
+            Route::get('transactions/{status_code}', ['as' => 'transactions', 'uses' => 'TransactionController@index']);
+            Route::get('transactions/{status_code}/{id}/show', ['as' => 'transactions_show', 'uses' => 'TransactionController@show']);
             
             Route::get('commission_settings', ['as' => 'commission_settings', 'uses' => 'CommissionSettingsController@index']);
             Route::post('commission_settings', ['as' => 'commission_settings', 'uses' => 'CommissionSettingsController@store']);

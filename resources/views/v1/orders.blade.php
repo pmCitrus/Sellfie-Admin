@@ -52,10 +52,12 @@
                             <th> </th>
                             <th> </th>
                             <th> </th>
+                            <th> </th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
+                            <th rowspan="1" colspan="1"> <input> </th>
                             <th rowspan="1" colspan="1"> <input> </th>
                             <th rowspan="1" colspan="1"> <input> </th>
                             <th rowspan="1" colspan="1"> <input> </th>
@@ -123,6 +125,13 @@
                         "render": function(data) {
                             return  '<a title="View Order History" id="view_row">'+data+'</a>';
                         }
+                    },
+                    {
+                        "name": "orders.created_at",
+                        "data": "created_at",
+                        "title": "Created At",
+                        "orderable": false,
+                        "searchable": true
                     },
                     {
                         "name": "product_name",
