@@ -27,105 +27,91 @@
                     <div class="panel-body">
                         <ul class="timeline">
                             <li>
-                                <div class="timeline-badge"><i class="fa fa-check"></i>
+                                <div class="timeline-badge success"><i class="fa fa-check"></i>
                                 </div>
                                 <div class="timeline-panel">
                                     <div class="timeline-heading">
-                                        <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                        <p><small class="text-muted"><i class="fa fa-clock-o"></i> 11 hours ago via Twitter</small>
-                                        </p>
+                                        <h4 class="timeline-title">
+                                            <a target="_blank" href="{{ $product_url }}">
+                                                {{ $product_name }}
+                                            </a>
+                                            <small class="text-muted pull-right">
+                                                <i class="fa fa-clock-o"></i>
+                                                {{ $products_created_at }}
+                                            </small>
+                                        </h4>
                                     </div>
                                     <div class="timeline-body">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero laboriosam dolor perspiciatis omnis exercitationem. Beatae, officia pariatur? Est cum veniam excepturi. Maiores praesentium, porro voluptas suscipit facere rem dicta, debitis.</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="timeline-inverted">
-                                <div class="timeline-badge warning"><i class="fa fa-credit-card"></i>
-                                </div>
-                                <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                        <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                    </div>
-                                    <div class="timeline-body">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem dolorem quibusdam, tenetur commodi provident cumque magni voluptatem libero, quis rerum. Fugiat esse debitis optio, tempore. Animi officiis alias, officia repellendus.</p>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium maiores odit qui est tempora eos, nostrum provident explicabo dignissimos debitis vel! Adipisci eius voluptates, ad aut recusandae minus eaque facere.</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="timeline-badge danger"><i class="fa fa-bomb"></i>
-                                </div>
-                                <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                        <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                    </div>
-                                    <div class="timeline-body">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus numquam facilis enim eaque, tenetur nam id qui vel velit similique nihil iure molestias aliquam, voluptatem totam quaerat, magni commodi quisquam.</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="timeline-inverted">
-                                <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                        <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                    </div>
-                                    <div class="timeline-body">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates est quaerat asperiores sapiente, eligendi, nihil. Itaque quos, alias sapiente rerum quas odit! Aperiam officiis quidem delectus libero, omnis ut debitis!</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="timeline-badge info"><i class="fa fa-save"></i>
-                                </div>
-                                <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                        <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                    </div>
-                                    <div class="timeline-body">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis minus modi quam ipsum alias at est molestiae excepturi delectus nesciunt, quibusdam debitis amet, beatae consequuntur impedit nulla qui! Laborum, atque.</p>
                                         <hr>
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
-                                                <i class="fa fa-gear"></i>  <span class="caret"></span>
-                                            </button>
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li><a href="#">Action</a>
-                                                </li>
-                                                <li><a href="#">Another action</a>
-                                                </li>
-                                                <li><a href="#">Something else here</a>
-                                                </li>
-                                                <li class="divider"></li>
-                                                <li><a href="#">Separated link</a>
-                                                </li>
-                                            </ul>
+                                        <p>{{ $product_description }}</p>
+                                        <hr>
+                                        <p>Selling Price- {{ strtoupper($currency)." ".$selling_price }}</p>
+                                        <p>Shipping Charge- {{ strtoupper($currency)." ".$shipping_charge }}</p>
+                                        <hr>
+                                        <p> Created by- {{ $first_name }}</p>
+                                        <p> Seller Mobile- {{ $username }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                            @for($i=0; $i < count($order_history); $i++)
+                                <li @if(($i % 2) == 0) class="timeline-inverted" @endif >
+                                    <div @if(($i % 2) == 0) class="timeline-badge info" @else class="timeline-badge success" @endif >
+                                        <i @if(($i % 2) == 0) class="fa fa-thumbs-up" @else class="fa fa-check" @endif></i>
+                                    </div>
+                                    <div class="timeline-panel">
+                                        <div class="timeline-heading">
+                                            <h4 class="timeline-title">
+                                                {{ $order_history[$i]['status_description'] }}
+                                                <small class="text-muted pull-right">
+                                                    <i class="fa fa-clock-o"></i>
+                                                    {{ $order_history[$i]['created_at'] }}
+                                                </small>
+                                            </h4>
                                         </div>
+                                        @if($order_history[$i]['internal_status_code'] == config('status_codes.order_status_codes.OrderInitiated'))
+                                            <div class="timeline-body">
+                                                <hr>
+                                                <p> Sales Channel- {{ ucwords($providers_name) }}</p>
+                                                <p> Order Amount- {{ strtoupper($currency)." ".$order_items_price }} </p>
+                                                <p> Ordered by- {{ $customers_name }}</p>
+                                                <p> Buyer Mobile- {{ $customers_contact_number }}</p>
+                                                <p> Buyer Email- {{ $customers_email_address }}</p>
+                                            </div>
+                                        @elseif($order_history[$i]['internal_status_code'] == config('status_codes.order_status_codes.PaymentCompleted'))
+                                            <div class="timeline-body">
+                                                <hr>
+                                                <p> Payment Reference ID- {{ $payment_ref_id }}</p>
+                                                <p> Payment Mode- {{ $payment_mode }}</p>
+                                                <p> Total Amount Paid- {{ $total_amount_paid }}</p>
+                                            </div>
+                                        @elseif($order_history[$i]['internal_status_code'] == config('status_codes.order_status_codes.OrderShipped'))
+                                            <div class="timeline-body">
+                                                <hr>
+                                                <p>Shipped To-
+                                                    <p> {{
+                                                        strToUpper($shipping_address
+                                                        .", "
+                                                        .$shipping_city
+                                                        .", "
+                                                        .$shipping_state
+                                                        .", "
+                                                        .$shipping_country
+                                                        .", "
+                                                        .$shipping_pincode
+                                                        ." -- "
+                                                        .$shipping_landmark)
+                                                        }}
+                                                    </p>
+                                                </p>
+                                                <hr>
+                                                <p> Shipping Service Used- {{ $shipping_service }} </p>
+                                                <p> Tracking Number- {{ $tracking_number }} </p>
+                                                <p> Seller Comments- {{ $comments }} </p>
+                                            </div>
+                                        @endif
                                     </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                        <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                    </div>
-                                    <div class="timeline-body">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi fuga odio quibusdam. Iure expedita, incidunt unde quis nam! Quod, quisquam. Officia quam qui adipisci quas consequuntur nostrum sequi. Consequuntur, commodi.</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="timeline-inverted">
-                                <div class="timeline-badge success"><i class="fa fa-graduation-cap"></i>
-                                </div>
-                                <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                        <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                    </div>
-                                    <div class="timeline-body">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt obcaecati, quaerat tempore officia voluptas debitis consectetur culpa amet, accusamus dolorum fugiat, animi dicta aperiam, enim incidunt quisquam maxime neque eaque.</p>
-                                    </div>
-                                </div>
-                            </li>
+                                </li>
+                            @endfor
                         </ul>
                     </div>
                     <!-- /.panel-body -->

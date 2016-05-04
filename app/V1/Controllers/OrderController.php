@@ -90,13 +90,14 @@ class OrderController extends Controller
                                 'products.products_id',
                                 'products.product_name',
                                 'products.product_description',
+                                'products.currency',
                                 'skus.selling_price',
                                 'product_shipping_details.shipping_charge',
-                                'products.created_at',
+                                'products.created_at as products_created_at',
                                 'users.first_name',
                                 'users.username',
                                 'internal_status_codes.status_description',
-                                'orders.created_at',
+                                'orders.created_at as orders_created_at',
                                 'payment_details.customers_name',
                                 'payment_details.customers_contact_number',
                                 'order_shipping_details.shipping_address',
@@ -108,36 +109,34 @@ class OrderController extends Controller
                                 'order_shipping_details.shipping_service',
                                 'order_shipping_details.tracking_number',
                                 'order_shipping_details.comments',
-                                'order_items.order_items_quantity',
                                 'order_items.order_items_price',
                                 'providers.providers_name',
                                 'payment_details.payment_ref_id',
                                 'payment_details.payment_mode',
+                                'payment_details.total_amount as total_amount_paid',
                                 'payment_details.customers_email_address',
                                 'pg_status_codes.pg_status_description'
                             ]);
-        $data           = json_decode(json_encode($order_data[0]), true);
         
+        $data               = json_decode(json_encode($order_data[0]), true);
+        $data['product_url']        = config("base_urls.product_share_url").$data['products_id'];
+        $data['products_created_at']= Carbon::createFromFormat('Y-m-d H:i:s', $data['products_created_at'])->toDayDateTimeString();
+        $data['orders_created_at']  = Carbon::createFromFormat('Y-m-d H:i:s', $data['orders_created_at'])->toDayDateTimeString();
         $order_history_data     = DB::table('orders')
                                     ->join('order_history', 'order_history.orders_id', '=', 'orders.orders_id')
                                     ->join('internal_status_codes', 'internal_status_codes.internal_status_code', '=', 'order_history.internal_status_code')
                                     ->where('orders.orders_id', $orders_id)
                                     ->get([
+                                        'order_history.internal_status_code',
                                         'internal_status_codes.status_description',
                                         'order_history.created_at'
                                     ]);
-        
-        $data['order_history']  = json_decode(json_encode($order_history_data[0]), true);
-        print_r($data['order_history']); die;
-        foreach($data['order_history'] as $hist_data)
+        $data['order_history']  = json_decode(json_encode($order_history_data), true);
+        for($i=0; $i<count($data['order_history']); $i++)
         {
-            print_r($hist_data);
-//            echo $hist_data['created_at'];
-//            $data['order_history']['created_at']    = toDayDateTimeString();
+            $data['order_history'][$i]['created_at']    = Carbon::createFromFormat('Y-m-d H:i:s', $data['order_history'][$i]['created_at'])->toDayDateTimeString();
         }
-        die;
-        echo "<pre>";
-        print_r($data); die;
+        
         return view('v1.orders-show', $data);
     }
     
